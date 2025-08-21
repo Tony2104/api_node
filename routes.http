@@ -1,0 +1,14 @@
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "title": "Curso de DevOps"
+}
+
+###
+
+GET http://localhost:3000/courses
+
+###
+
+GET http://localhost:3000/courses/29b528ee-f5fd-435d-9adf-8b6eb2c59c31
