@@ -11,4 +11,17 @@ GET http://localhost:3000/courses
 
 ###
 
-GET http://localhost:3000/courses/29b528ee-f5fd-435d-9adf-8b6eb2c59c31
+GET http://localhost:3000/courses/34asd
+
+###
+
+PUT http://localhost:3000/courses/34asd
+Content-Type: application/json
+
+{
+  "title": "Curso de Docker"
+}
+
+###
+
+DELETE http://localhost:3000/courses/9a1d6afd-b768-47f3-b883-d2ac5252358b

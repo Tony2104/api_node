@@ -18,11 +18,17 @@ type Course = {
 	id: string
 	title: string
 }
+type Body = {
+	title: string
+}
+type Params = {
+	id: string
+}
 
 const courses: Course[] = [
-	{ id: "1", title: "Curso de Node" },
-	{ id: "2", title: "Curso de Fastify" },
-	{ id: "3", title: "Curso de React" },
+	{ id: "34asd", title: "Curso de Node" },
+	{ id: "5fad", title: "Curso de Fastify" },
+	{ id: "6asda", title: "Curso de React" },
 ]
 
 server.get("/courses", (req, reply) => {
@@ -30,9 +36,6 @@ server.get("/courses", (req, reply) => {
 })
 
 server.get("/courses/:id", (req, reply) => {
-	type Params = {
-		id: string
-	}
 	const params = req.params as Params
 	const id = params.id
 
@@ -46,10 +49,6 @@ server.get("/courses/:id", (req, reply) => {
 })
 
 server.post("/courses", (req, reply) => {
-	type Body = {
-		title: string
-	}
-
 	const id = randomUUID()
 	const body = req.body as Body
 	const title = body.title
@@ -60,6 +59,40 @@ server.post("/courses", (req, reply) => {
 
 	courses.push({ id, title })
 	return reply.status(201).send({ id })
+})
+
+server.put("/courses/:id", (req, reply) => {
+	const body = req.body as Body
+	const title = body.title
+
+	const params = req.params as Params
+	const id = params.id
+
+	const course = courses.find((course) => course.id === id)
+
+	if (!course) {
+		return reply.status(404).send({ error: "Curso não encontrado" })
+	}
+
+	if (title !== undefined) course.title = title
+
+	return reply.status(200).send({ message: "Sucesso!" })
+})
+
+server.delete("/courses/:id", (req, reply) => {
+	const params = req.params as Params
+	const id = params.id
+	console.log(id)
+
+	const courseId = courses.findIndex((course) => course.id === id)
+	console.log(courseId)
+
+	if (courseId === -1)
+		return reply.status(404).send({ error: "Curso não encontrado" })
+
+	courses.splice(courseId, 1)
+
+	return reply.status(200).send({ message: "Curso removido com sucesso!" })
 })
 
 server.listen({ port: 3000 }).then(() => {
