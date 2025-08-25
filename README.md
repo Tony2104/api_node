@@ -1,6 +1,7 @@
 # backendAuth
 
-Este é um projeto backend Node.js para autenticação e gestão de cursos, utilizando TypeScript, Docker, Drizzle ORM e Zod.
+API em Node.js + TypeScript usando Fastify, Drizzle ORM (PostgreSQL) e Zod, para autenticação e gestão de cursos.
+Inclui documentação Swagger/Scalar em ambiente de desenvolvimento.
 
 ## Funcionalidades
 
@@ -25,19 +26,6 @@ src/
     get-courses.ts         # Rota para listar cursos
 ```
 
-## Instalação
-
-1. Clone o repositório:
-   ```bash
-   git clone <url-do-repositorio>
-   cd backendAuth
-   ```
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-3. Configure as variáveis de ambiente conforme necessário.
-
 ## Utilização
 
 - Para iniciar o servidor em modo de desenvolvimento:
@@ -57,7 +45,7 @@ src/
 
 ## Tecnologias Utilizadas
 
-- Node.js
+- Node.js 22+
 - TypeScript
 - Fastify
 - pino-pretty
