@@ -1,5 +1,15 @@
 import fastify from "fastify"
-import { randomUUID } from "node:crypto"
+import {
+	validatorCompiler,
+	serializerCompiler,
+	type ZodTypeProvider,
+	jsonSchemaTransform,
+} from "fastify-type-provider-zod"
+import { fastifySwagger } from "@fastify/swagger"
+import { getCoursesRoute } from "./src/routes/get-courses.ts"
+import { getCourseByIdRoute } from "./src/routes/get-course-by-id.ts"
+import { createCourseRoute } from "./src/routes/create-course.ts"
+import scalarApiReferenceFastify from "@scalar/fastify-api-reference"
 
 const server = fastify({
 	logger: {
@@ -12,88 +22,28 @@ const server = fastify({
 			},
 		},
 	},
-})
+}).withTypeProvider<ZodTypeProvider>()
 
-type Course = {
-	id: string
-	title: string
-}
-type Body = {
-	title: string
-}
-type Params = {
-	id: string
-}
-
-const courses: Course[] = [
-	{ id: "34asd", title: "Curso de Node" },
-	{ id: "5fad", title: "Curso de Fastify" },
-	{ id: "6asda", title: "Curso de React" },
-]
-
-server.get("/courses", (req, reply) => {
-	return { courses }
-})
-
-server.get("/courses/:id", (req, reply) => {
-	const params = req.params as Params
-	const id = params.id
-
-	const course = courses.find((course) => {
-		return id === course.id
+if (process.env.NODE_ENV === "development") {
+	server.register(fastifySwagger, {
+		openapi: { info: { title: "Desafio Node.js", version: "1.0.0" } },
+		transform: jsonSchemaTransform,
 	})
-	if (course) {
-		return reply.status(200).send({ course })
-	}
-	return reply.status(404).send({ message: "Curso não encontrado!" })
-})
 
-server.post("/courses", (req, reply) => {
-	const id = randomUUID()
-	const body = req.body as Body
-	const title = body.title
+	server.register(scalarApiReferenceFastify, {
+		routePrefix: "/docs",
+		configuration: {
+			theme: "bluePlanet",
+		},
+	})
+}
 
-	if (!id) {
-		return reply.status(400).send({ message: "Título Obrigatório!" })
-	}
+server.setValidatorCompiler(validatorCompiler)
+server.setSerializerCompiler(serializerCompiler)
 
-	courses.push({ id, title })
-	return reply.status(201).send({ id })
-})
-
-server.put("/courses/:id", (req, reply) => {
-	const body = req.body as Body
-	const title = body.title
-
-	const params = req.params as Params
-	const id = params.id
-
-	const course = courses.find((course) => course.id === id)
-
-	if (!course) {
-		return reply.status(404).send({ error: "Curso não encontrado" })
-	}
-
-	if (title !== undefined) course.title = title
-
-	return reply.status(200).send({ message: "Sucesso!" })
-})
-
-server.delete("/courses/:id", (req, reply) => {
-	const params = req.params as Params
-	const id = params.id
-	console.log(id)
-
-	const courseId = courses.findIndex((course) => course.id === id)
-	console.log(courseId)
-
-	if (courseId === -1)
-		return reply.status(404).send({ error: "Curso não encontrado" })
-
-	courses.splice(courseId, 1)
-
-	return reply.status(200).send({ message: "Curso removido com sucesso!" })
-})
+server.register(getCoursesRoute)
+server.register(getCourseByIdRoute)
+server.register(createCourseRoute)
 
 server.listen({ port: 3000 }).then(() => {
 	console.log("Servidor ligado!")

@@ -2,7 +2,8 @@ POST http://localhost:3000/courses
 Content-Type: application/json
 
 {
-  "title": "Curso de DevOps"
+  "title": "Curso de Python",
+  "description": "Um bom Curso!"
 }
 
 ###
@@ -11,7 +12,7 @@ GET http://localhost:3000/courses
 
 ###
 
-GET http://localhost:3000/courses/34asd
+GET http://localhost:3000/courses/31b84e0f-1f3e-46fd-b551-3549d7e436da
 
 ###
 
